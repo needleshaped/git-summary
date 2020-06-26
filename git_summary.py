@@ -5,6 +5,7 @@ import concurrent.futures as cf
 import os
 import subprocess
 import sys
+import glob
 from collections import OrderedDict
 from itertools import zip_longest
 
@@ -122,8 +123,8 @@ def main():
         args.simple = True
 
     # Repos are folders which have .git folders inside them
-    candidates = [f for f in os.listdir(args.path)
-                  if os.path.isdir(os.path.join(args.path, f, '.git'))]
+    candidates = [gitdir for gitdir in glob.glob(path + '/**/', recursive=True)
+        if os.path.isdir(os.path.join(path, gitdir, '.git'))]
     # But we filter out any that aren't *really* git repos...
     repos = [repo for repo in
              [GitRepo.construct(args.path, c) for c in sorted(candidates)]
